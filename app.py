@@ -149,7 +149,7 @@ else:
 
     if st.button("GERAR PEDIDO"):
         if nome_user:
-            whats_num = "5511930357518" # TROQUE PELO NÚMERO REAL
+            whats_num = "5511954906016" # TROQUE PELO NÚMERO REAL
             local = end_user if end_user else "Retirada no Local"
             texto = (f"Olá Elisa! Novo pedido:\n\n*Cliente:* {nome_user}\n*Entrega:* {local}\n\n*Itens:*\n{resumo_msg}\n*Total: R$ {total:.2f}*")
             link = f"https://wa.me/{whats_num}?text={texto.replace(' ', '%20').replace('\n', '%0A')}"
