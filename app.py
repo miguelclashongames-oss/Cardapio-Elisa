@@ -76,8 +76,8 @@ cardapio = {
         "🍮 Doce de Leite": 20.0, "🍌 Banana com Leite Condensado": 20.0,
     },
     "🍕 MINI PIZZAS": {
-        "🧀 Mussarela (Pizza)": 10.0, "🍕 Calabresa (Pizza)": 10.0, "🌿 Margarita": 12.0,
-        "🍗 Frango (Pizza)": 15.0, "🥛 Calabresa c/ Requeijão": 12.0, "🍶 Frango c/ Requeijão": 17.0,
+        "🧀 Mussarela (Pizza)": 15.0, "🍕 Calabresa (Pizza)": 15.0, "🌿 Margarita": 15.0,
+        "🍗 Frango (Pizza)": 15.0, "🥛 Calabresa c/ Requeijão": 15.0, "🍶 Frango c/ Requeijão": 15.0,
     },
     "🐣 OVOS AO LEITE": {
         "🍫 Ovo ao Leite 250g": 25.0, "🍫 Ovo ao Leite 390g": 35.0, 
@@ -149,7 +149,7 @@ else:
 
     if st.button("GERAR PEDIDO"):
         if nome_user:
-            whats_num = "5511999999999" # TROQUE PELO NÚMERO REAL
+            whats_num = "5511930357518" # TROQUE PELO NÚMERO REAL
             local = end_user if end_user else "Retirada no Local"
             texto = (f"Olá Elisa! Novo pedido:\n\n*Cliente:* {nome_user}\n*Entrega:* {local}\n\n*Itens:*\n{resumo_msg}\n*Total: R$ {total:.2f}*")
             link = f"https://wa.me/{whats_num}?text={texto.replace(' ', '%20').replace('\n', '%0A')}"
