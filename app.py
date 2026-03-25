@@ -122,7 +122,7 @@ else:
             whats_elisa = "5511954906016" 
             
             mensagem_zap = (
-                f"Olá Elisa! Pedido via Zynix App:\n\n"
+                f"Olá Elisa! Pedido via cardapio digital:\n\n"
                 f"*Cliente:* {nome}\n"
                 f"*Local:* {end}\n\n"
                 f"*Itens:*\n{resumo}\n"
