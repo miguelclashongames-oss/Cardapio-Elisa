@@ -181,10 +181,10 @@ else:
     if st.sidebar.button("🚀 Enviar Pedido via WhatsApp"):
         if nome and end and total > 0:
             # --- LEMBRE DE TROCAR O NÚMERO ABAIXO PARA O DA ELISA ---
-            whats_elisa = "5511999999999" 
+            whats_elisa = "5511930357518" 
             
             mensagem_zap = (
-                f"Olá Elisa! Pedido de Zynix App:\n\n"
+                f"Olá Elisa! Pedido do cardapio digital:\n\n"
                 f"*Cliente:* {nome}\n"
                 f"*Local:* {end}\n\n"
                 f"*Itens:*\n{resumo}\n"
