@@ -4,29 +4,23 @@ import os
 # Configurações da Página
 st.set_page_config(page_title="Elisa - Doces Finos Artesanais", page_icon="🍫", layout="centered")
 
-# --- CSS PERSONALIZADO (ESTILO PREMIUM ELISA & ZYNIX) ---
-# Usei as cores do logo: Verde Musgo (#565F3A), Marrom (#533E2B) e Rosé (#D0A08A)
+# --- CSS PERSONALIZADO (ZYNIX STUDIOS) ---
 st.markdown("""
     <style>
-    /* Cor do fundo e texto principal */
     .stApp {
         background-color: #F8F9F5;
         color: #533E2B;
     }
-    /* Estilo dos títulos e expanders */
     h1, h2, h3, h4, p, .stExpander p {
         color: #565F3A !important;
         font-family: 'Georgia', serif;
     }
-    /* Estilo da Barra Lateral (Sidebar) */
     .stSidebar {
         background-color: #565F3A;
-        color: #F1FAEE;
     }
-    .stSidebar h2, .stSidebar p, .stSidebar h4 {
+    .stSidebar h2, .stSidebar p, .stSidebar h4, .stSidebar span {
         color: #F1FAEE !important;
     }
-    /* Cor dos botões da barra lateral */
     .stSidebar .stButton button {
         background-color: #D0A08A;
         color: #533E2B;
@@ -34,61 +28,27 @@ st.markdown("""
         border-radius: 20px;
         font-weight: bold;
     }
-    /* Cor dos botões na página central */
     .stButton button {
         background-color: #565F3A;
         color: white;
         border-radius: 20px;
     }
-    /* Estilo da notificação de 'adicionado' */
-    .stToast {
-        background-color: #D0A08A;
-        color: #533E2B;
+    /* Forçar a imagem a ocupar 100% da largura */
+    [data-testid="stImage"] img {
+        width: 100% !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# --- CARREGAR E EXIBIR A LOGO DESTAQUE NO TOPO ---
-def carregar_logo_destaque():
-    # Caminho do arquivo de logo no mesmo diretório no GitHub
-    caminho_logo = os.path.join(os.path.dirname(__file__), "logo.png")
-    
-    # Verifica se o arquivo existe para não dar erro
-    if os.path.exists(caminho_logo):
-        # Usando HTML/CSS para centralizar e dar destaque (sem colunas)
-        st.markdown(
-            f"""
-            <div style="text-align: center;">
-                <img src="data:image/png;base64,{st.image(caminho_logo).data}" width="550" style="max-width: 100%; height: auto; margin-bottom: 20px;">
-            </div>
-            <hr style="border: 0; border-top: 1px solid #D0A08A; margin-bottom: 30px;">
-            """,
-            unsafe_allow_html=True
-        )
-        # Nota: O truque acima com data:image/png é chato de fazer no Streamlit puro, 
-        # mas o comando st.image resolve o centralizado se o container for centered.
-        
-        # JEITO FÁCIL E GARANTIDO NO STREAMLIT CLOUD:
-        # st.image(caminho_logo, width=550) # Removi as colunas, o centered layout cuida do resto
-        # st.markdown("---")
-        
-    else:
-        st.warning("⚠️ Arquivo logo.png não encontrado no GitHub. Verifique se ele está na mesma pasta do app.py.")
-
-# Chama a função para exibir o logo
-# carregar_logo_destaque() # Desativei o truque complexo
-
-# JEITO SIMPLES E GARANTIDO QUE JÁ FUNCIONA:
+# --- EXIBIR A LOGO (LARGURA TOTAL) ---
 caminho_logo = os.path.join(os.path.dirname(__file__), "logo.png")
 if os.path.exists(caminho_logo):
-    # Usando o container do Streamlit para centralizar
-    st.image(caminho_logo, width=550) # AUMENTADO PARA 550PX
+    st.image(caminho_logo, use_container_width=True)
     st.markdown("---")
 else:
-    st.warning("⚠️ Arquivo logo.png não encontrado. Verifique se ele está na mesma pasta do GitHub.")
+    st.warning("⚠️ Arquivo logo.png não encontrado no GitHub.")
 
-
-# --- BANCO DE DADOS DO CARDÁPIO COM EMOJIS ---
+# --- BANCO DE DADOS DO CARDÁPIO ---
 cardapio = {
     "🌮 Tapiocas Salgadas": {
         "🧈 Manteiga": 10.00,
@@ -135,31 +95,26 @@ cardapio = {
 if 'carrinho' not in st.session_state:
     st.session_state.carrinho = {}
 
-# Exibir os itens
 for categoria, itens in cardapio.items():
-    # Estilo refinado para os expanders
     with st.expander(f"📍 {categoria}", expanded=True):
         for item, preco in itens.items():
             c1, c2 = st.columns([3, 1])
             c1.markdown(f"<p style='font-size: 16px; margin: 0;'><b>{item}</b> - R$ {preco:.2f}</p>", unsafe_allow_html=True)
-            
-            # Chave única para evitar erro de elemento duplicado
             chave_botao = f"btn_{categoria}_{item}".replace(" ", "_")
-            
-            if c2.button("Adicionar", key=chave_botao):
+            if c2.button("Add", key=chave_botao):
                 if item in st.session_state.carrinho:
                     st.session_state.carrinho[item]['qtd'] += 1
                 else:
                     st.session_state.carrinho[item] = {'preco': preco, 'qtd': 1}
                 st.toast(f"{item} adicionado!")
 
-# --- BARRA LATERAL (CHECKOUT) ---
+# --- BARRA LATERAL (CHECKOUT E AVISO DE ENTREGA) ---
 st.sidebar.header("🛒 Seu Pedido")
 total = 0.0
 resumo = ""
 
 if not st.session_state.carrinho:
-    st.sidebar.info("Adicione itens para começar.")
+    st.sidebar.info("Carrinho vazio.")
 else:
     for item, d in st.session_state.carrinho.items():
         sub = d['preco'] * d['qtd']
@@ -167,35 +122,37 @@ else:
         st.sidebar.write(f"{d['qtd']}x {item} - R$ {sub:.2f}")
         resumo += f"- {d['qtd']}x {item} (R$ {sub:.2f})\n"
     
-    st.sidebar.success(f"**Total: R$ {total:.2f}**")
+    st.sidebar.success(f"**Total Produtos: R$ {total:.2f}**")
     
+    # AVISO IMPORTANTE SOBRE O UBER MOTO
+    st.sidebar.warning("🛵 **Entrega via Uber Moto**\n\nO custo do envio é por conta do cliente. Consulte o valor comigo pelo WhatsApp!")
+
     if st.sidebar.button("Limpar Carrinho"):
         st.session_state.carrinho = {}
         st.rerun()
 
     st.sidebar.markdown("---")
-    st.sidebar.markdown("#### Seus Dados:")
     nome = st.sidebar.text_input("Seu Nome:")
-    end = st.sidebar.text_input("Endereço ou Mesa:")
+    end = st.sidebar.text_input("Endereço de Entrega:")
     
-    if st.sidebar.button("🚀 Enviar Pedido via WhatsApp"):
+    if st.sidebar.button("🚀 Enviar Pedido"):
         if nome and end and total > 0:
-            # --- LEMBRE DE TROCAR O NÚMERO ABAIXO PARA O DA ELISA ---
-            whats_elisa = "5511930357518" 
+            # --- COLOQUE O NÚMERO DA ELISA AQUI ---
+            whats_elisa = "5511999999999" 
             
             mensagem_zap = (
-                f"Olá Elisa! Pedido do cardapio digital:\n\n"
+                f"Olá Elisa! Pedido de Zynix App:\n\n"
                 f"*Cliente:* {nome}\n"
-                f"*Local:* {end}\n\n"
+                f"*Endereço:* {end}\n\n"
                 f"*Itens:*\n{resumo}\n"
-                f"*Total: R$ {total:.2f}*"
+                f"*Total: R$ {total:.2f}*\n"
+                f"_(Ciente que o frete via Uber Moto é à parte)_"
             )
             
             link_final = f"https://wa.me/{whats_elisa}?text={mensagem_zap.replace(' ', '%20').replace('\n', '%0A')}"
-            st.sidebar.markdown(f"✅ [CLIQUE AQUI PARA CONFIRMAR]({link_final})")
+            st.sidebar.markdown(f"✅ [CONFIRMAR NO WHATSAPP]({link_final})")
         else:
-            st.sidebar.warning("Preencha nome/endereço e adicione itens!")
+            st.sidebar.error("Preencha nome/endereço!")
 
-# Rodapé
 st.markdown("---")
 st.caption("Desenvolvido por Zynix Studios")
