@@ -1,18 +1,19 @@
 import streamlit as st
 import os
 
-# Configurações de Elite
+# Configurações de Elite Zynix
 st.set_page_config(page_title="Elisa - Doces Finos", page_icon="🍫", layout="centered")
 
-# --- DESIGN ANTI-HULK & PREMIUM ZYNIX ---
+# --- DESIGN PREMIUM ZYNIX (ANTI-HULK & GRADIENT) ---
 st.markdown("""
     <style>
+    /* Fundo com degradê sofisticado */
     .stApp { 
         background: linear-gradient(180deg, #FDFDFB 0%, #F5F5F0 100%); 
         color: #4A3728; 
     }
     
-    /* REMOVER QUALQUER EFEITO VERDE DO STREAMLIT */
+    /* REMOVER EFEITO VERDE PADRÃO DO STREAMLIT */
     button:focus, button:active, .stButton button:focus {
         outline: none !important;
         box-shadow: none !important;
@@ -20,7 +21,7 @@ st.markdown("""
         color: white !important;
     }
 
-    /* BOTÃO ADICIONAR FORÇADO (TEXTO SEMPRE BRANCO) */
+    /* BOTÃO ADICIONAR FORÇADO (TEXTO BRANCO SEMPRE) */
     div.stButton > button {
         background-color: #565F3A !important; 
         color: white !important;
@@ -43,6 +44,7 @@ st.markdown("""
         border: 1px solid #D0A08A !important;
         border-radius: 12px !important;
         background-color: white !important;
+        margin-bottom: 10px;
     }
     
     [data-testid="stImage"] img {
@@ -50,23 +52,23 @@ st.markdown("""
         border-radius: 0 0 20px 20px;
     }
 
-    /* Estilo do aviso de Uber Moto */
-    .aviso-uber {
+    /* Ajuste de texto do aviso */
+    .aviso-uber-texto {
         color: #565F3A;
-        font-size: 13px;
+        font-size: 12px;
         font-weight: bold;
-        margin-top: -15px;
-        margin-bottom: 15px;
+        line-height: 1.2;
+        margin-top: 10px;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# --- LOGO ---
+# --- LOGO ZYNIX STYLE ---
 caminho_logo = os.path.join(os.path.dirname(__file__), "logo.png")
 if os.path.exists(caminho_logo):
     st.image(caminho_logo, use_container_width=True)
 
-# --- BANCO DE DADOS ---
+# --- CARDÁPIO ATUALIZADO (MIGUEL/ZYNIX) ---
 cardapio = {
     "🌮 TAPIOCAS SALGADAS": {
         "🧈 Manteiga": 10.0, "🥪 Presunto com Mussarela": 15.0, "🧀 Mussarela": 15.0,
@@ -80,8 +82,8 @@ cardapio = {
         "🍮 Doce de Leite": 20.0, "🍌 Banana com Leite Condensado": 20.0,
     },
     "🍕 MINI PIZZAS": {
-        "🧀 Mussarela (Pizza)": 10.0, "🍕 Calabresa (Pizza)": 10.0, "🌿 Margarita": 12.0,
-        "🍗 Frango (Pizza)": 15.0, "🥛 Calabresa c/ Requeijão": 12.0, "🍶 Frango c/ Requeijão": 17.0,
+        "🧀 Mussarela (Pizza)": 15.0, "🍕 Calabresa (Pizza)": 15.0, "🌿 Margarita": 15.0,
+        "🍗 Frango (Pizza)": 15.0, "🥛 Calabresa c/ Requeijão": 15.0, "🍶 Frango c/ Requeijão": 15.0,
     },
     "🐣 OVOS AO LEITE": {
         "🍫 Ovo ao Leite 250g": 25.0, "🍫 Ovo ao Leite 390g": 35.0, 
@@ -107,8 +109,8 @@ cardapio = {
 if 'carrinho' not in st.session_state:
     st.session_state.carrinho = {}
 
-# --- INTERFACE ---
-st.markdown("### ✨ Selecione seus produtos:")
+# --- INTERFACE DE SELEÇÃO ---
+st.markdown("### ✨ Escolha suas delícias:")
 
 for categoria, itens in cardapio.items():
     with st.expander(categoria):
@@ -124,7 +126,7 @@ for categoria, itens in cardapio.items():
 
 st.markdown("---")
 
-# --- CARRINHO ---
+# --- CARRINHO DINÂMICO ---
 st.header("🛒 Seu Carrinho")
 
 if not st.session_state.carrinho:
@@ -146,27 +148,30 @@ else:
 
     st.markdown("---")
     st.subheader("🏁 Finalização")
-    nome_user = st.text_input("Nome:")
+    nome_user = st.text_input("Seu Nome (Obrigatório):")
     
-    # CAMPO DE ENDEREÇO COM AVISO LADO A LADO
-    end_user = st.text_input("Endereço (Opcional):")
-    st.markdown('<p class="aviso-uber">🛵 Entrega via Uber Moto por conta do cliente (Consultar valor comigo)</p>', unsafe_allow_html=True)
+    # LADO A LADO: ENDEREÇO E AVISO UBER MOTO
+    col_end, col_aviso = st.columns([2, 1])
+    with col_end:
+        end_user = st.text_input("Endereço (Vazio para Retirada):")
+    with col_aviso:
+        st.markdown('<p class="aviso-uber-texto">🛵 Uber Moto por conta do cliente (Consultar valor)</p>', unsafe_allow_html=True)
 
-    if st.button("GERAR PEDIDO"):
+    if st.button("GERAR PEDIDO FINAL"):
         if nome_user:
-            whats_num = "5511954906016" # TROQUE PELO NÚMERO REAL
+            whats_num = "5511954906016" # <-- COLOQUE O WHATS DA ELISA AQUI!
             local = end_user if end_user else "Retirada no Local"
-            texto = (f"Olá Elisa! Novo pedido:\n\n*Cliente:* {nome_user}\n*Entrega:* {local}\n\n*Itens:*\n{resumo_msg}\n*Total: R$ {total:.2f}*")
+            texto = (f"Olá Elisa! novo pedido: Web:\n\n*Cliente:* {nome_user}\n*Entrega:* {local}\n\n*Itens:*\n{resumo_msg}\n*Total: R$ {total:.2f}*")
             link = f"https://wa.me/{whats_num}?text={texto.replace(' ', '%20').replace('\n', '%0A')}"
             
             st.markdown(f'''
                 <a href="{link}" target="_blank" style="text-decoration: none;">
-                    <div style="background-color: #25D366; color: white; padding: 18px; text-align: center; border-radius: 12px; font-weight: bold;">
+                    <div style="background-color: #25D366; color: white; padding: 18px; text-align: center; border-radius: 12px; font-weight: bold; font-size: 18px;">
                         📱 ENVIAR PARA O WHATSAPP
                     </div>
                 </a>
             ''', unsafe_allow_html=True)
         else:
-            st.error("Digite seu nome!")
+            st.error("⚠️ Por favor, digite seu nome.")
 
 st.markdown("<br><hr><center><small>Desenvolvido por Zynix</small></center>", unsafe_allow_html=True)
