@@ -4,16 +4,15 @@ import os
 # Configurações de Elite
 st.set_page_config(page_title="Elisa - Doces Finos", page_icon="🍫", layout="centered")
 
-# --- DESIGN ANTI-HULK ZYNIX (HTML PURO PARA OS BOTÕES) ---
+# --- DESIGN ANTI-HULK & PREMIUM ZYNIX ---
 st.markdown("""
     <style>
-    /* Fundo Sofisticado */
     .stApp { 
         background: linear-gradient(180deg, #FDFDFB 0%, #F5F5F0 100%); 
         color: #4A3728; 
     }
     
-    /* REMOVER QUALQUER EFEITO DE FOCO OU SELEÇÃO VERDE PADRÃO */
+    /* REMOVER QUALQUER EFEITO VERDE DO STREAMLIT */
     button:focus, button:active, .stButton button:focus {
         outline: none !important;
         box-shadow: none !important;
@@ -21,7 +20,7 @@ st.markdown("""
         color: white !important;
     }
 
-    /* ESTILO DO BOTÃO REAL (FORÇADO) */
+    /* BOTÃO ADICIONAR FORÇADO (TEXTO SEMPRE BRANCO) */
     div.stButton > button {
         background-color: #565F3A !important; 
         color: white !important;
@@ -32,12 +31,9 @@ st.markdown("""
         font-weight: bold !important;
         font-size: 14px !important;
         text-transform: uppercase;
-        letter-spacing: 1px;
-        cursor: pointer;
         display: block !important;
     }
 
-    /* Mudar para Rose apenas no Hover, sem o verde do Streamlit */
     div.stButton > button:hover {
         background-color: #D0A08A !important;
         color: white !important;
@@ -47,12 +43,20 @@ st.markdown("""
         border: 1px solid #D0A08A !important;
         border-radius: 12px !important;
         background-color: white !important;
-        margin-bottom: 10px;
     }
     
     [data-testid="stImage"] img {
         width: 100% !important;
         border-radius: 0 0 20px 20px;
+    }
+
+    /* Estilo do aviso de Uber Moto */
+    .aviso-uber {
+        color: #565F3A;
+        font-size: 13px;
+        font-weight: bold;
+        margin-top: -15px;
+        margin-bottom: 15px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -62,7 +66,7 @@ caminho_logo = os.path.join(os.path.dirname(__file__), "logo.png")
 if os.path.exists(caminho_logo):
     st.image(caminho_logo, use_container_width=True)
 
-# --- BANCO DE DATOS ---
+# --- BANCO DE DADOS ---
 cardapio = {
     "🌮 TAPIOCAS SALGADAS": {
         "🧈 Manteiga": 10.0, "🥪 Presunto com Mussarela": 15.0, "🧀 Mussarela": 15.0,
@@ -76,8 +80,8 @@ cardapio = {
         "🍮 Doce de Leite": 20.0, "🍌 Banana com Leite Condensado": 20.0,
     },
     "🍕 MINI PIZZAS": {
-        "🧀 Mussarela (Pizza)": 15.0, "🍕 Calabresa (Pizza)": 15.0, "🌿 Margarita": 15.0,
-        "🍗 Frango (Pizza)": 15.0, "🥛 Calabresa c/ Requeijão": 15.0, "🍶 Frango c/ Requeijão": 15.0,
+        "🧀 Mussarela (Pizza)": 10.0, "🍕 Calabresa (Pizza)": 10.0, "🌿 Margarita": 12.0,
+        "🍗 Frango (Pizza)": 15.0, "🥛 Calabresa c/ Requeijão": 12.0, "🍶 Frango c/ Requeijão": 17.0,
     },
     "🐣 OVOS AO LEITE": {
         "🍫 Ovo ao Leite 250g": 25.0, "🍫 Ovo ao Leite 390g": 35.0, 
@@ -111,8 +115,6 @@ for categoria, itens in cardapio.items():
         for item, preco in itens.items():
             col_txt, col_btn = st.columns([2.5, 1.5])
             col_txt.markdown(f"**{item}**\n<span style='color: #D0A08A;'>R$ {preco:.2f}</span>", unsafe_allow_html=True)
-            
-            # O BOTÃO AGORA TEM UM ESTILO FORÇADO PARA NÃO FICAR VERDE
             if col_btn.button("ADICIONAR", key=f"add_{categoria}_{item}"):
                 if item in st.session_state.carrinho:
                     st.session_state.carrinho[item]['qtd'] += 1
@@ -145,7 +147,10 @@ else:
     st.markdown("---")
     st.subheader("🏁 Finalização")
     nome_user = st.text_input("Nome:")
+    
+    # CAMPO DE ENDEREÇO COM AVISO LADO A LADO
     end_user = st.text_input("Endereço (Opcional):")
+    st.markdown('<p class="aviso-uber">🛵 Entrega via Uber Moto por conta do cliente (Consultar valor comigo)</p>', unsafe_allow_html=True)
 
     if st.button("GERAR PEDIDO"):
         if nome_user:
@@ -157,7 +162,7 @@ else:
             st.markdown(f'''
                 <a href="{link}" target="_blank" style="text-decoration: none;">
                     <div style="background-color: #25D366; color: white; padding: 18px; text-align: center; border-radius: 12px; font-weight: bold;">
-                        🚀 ENVIAR PARA O WHATSAPP
+                        📱 ENVIAR PARA O WHATSAPP
                     </div>
                 </a>
             ''', unsafe_allow_html=True)
