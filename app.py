@@ -4,18 +4,22 @@ import os
 # Configurações de Elite
 st.set_page_config(page_title="Elisa - Doces Finos", page_icon="🍫", layout="centered")
 
-# --- DESIGN SIGNATURE ZYNIX ---
+# --- DESIGN EXCLUSIVO ZYNIX (SEM BUGS DE COR) ---
 st.markdown("""
     <style>
-    /* Fundo e Tipografia */
-    .stApp { background-color: #FDFDFB; color: #4A3728; }
+    /* Fundo com degradê sofisticado Zynix */
+    .stApp { 
+        background: linear-gradient(180deg, #FDFDFB 0%, #F5F5F0 100%); 
+        color: #4A3728; 
+    }
     
-    /* Categorias com Estilo */
+    /* Categorias com bordas arredondadas e sombra leve */
     .stExpander {
         border: 1px solid #D0A08A !important;
         border-radius: 15px !important;
         background-color: white !important;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
+        box-shadow: 0px 2px 8px rgba(0,0,0,0.05);
     }
     .stExpander span {
         font-size: 22px !important;
@@ -23,45 +27,45 @@ st.markdown("""
         color: #565F3A !important;
     }
     
-    /* BOTÃO ADICIONAR - CORREÇÃO VISUAL */
-    .stButton button {
-        background-color: #565F3A !important; /* Verde Botânico */
-        color: white !important; /* Texto SEMPRE visível */
-        border-radius: 8px !important;
+    /* CORREÇÃO DEFINITIVA DO BOTÃO VERDE */
+    div.stButton > button:first-child {
+        background-color: #565F3A !important; /* Verde Botânico fixo */
+        color: white !important; /* Texto sempre branco */
+        border-radius: 10px !important;
         width: 100% !important;
         font-weight: bold !important;
+        font-size: 14px !important;
+        height: 45px !important;
         border: none !important;
-        height: 45px;
-        transition: 0.3s;
-    }
-    .stButton button:hover {
-        background-color: #D0A08A !important; /* Rosé no Hover */
-        transform: scale(1.02);
+        opacity: 1 !important; /* Garante que não fique transparente */
     }
 
-    /* Caixa de Finalização */
-    .caixa-final {
-        background-color: #565F3A;
-        padding: 25px;
-        border-radius: 20px;
-        color: white;
-        box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+    /* Efeito de clique mais elegante */
+    div.stButton > button:active {
+        background-color: #D0A08A !important;
+        transform: scale(0.98);
+    }
+
+    /* Estilo do Carrinho e Inputs */
+    .stTextInput input {
+        border-radius: 10px !important;
+        border: 1px solid #D0A08A !important;
     }
     
-    /* Logo em Destaque */
+    /* Logo em Destaque Total */
     [data-testid="stImage"] img {
         width: 100% !important;
-        border-radius: 0px 0px 30px 30px;
+        border-radius: 0px 0px 20px 20px;
     }
     </style>
 """, unsafe_allow_html=True)
 
 # --- LOGO ---
-caminho_logo = os.path.join(os.path.dirname(__file__), "logo.png")
-if os.path.exists(caminho_logo):
-    st.image(caminho_logo, use_container_width=True)
+camin_logo = os.path.join(os.path.dirname(__file__), "logo.png")
+if os.path.exists(camin_logo):
+    st.image(camin_logo, use_container_width=True)
 else:
-    st.warning("⚠️ Adicione 'logo.png' no GitHub para ativar o visual completo.")
+    st.warning("⚠️ Carregue a 'logo.png' para ativar o visual.")
 
 # --- CARDÁPIO ATUALIZADO ---
 cardapio = {
@@ -104,8 +108,8 @@ cardapio = {
 if 'carrinho' not in st.session_state:
     st.session_state.carrinho = {}
 
-# --- INTERFACE DE COMPRA ---
-st.markdown("### ✨ Faça sua escolha abaixo:")
+# --- INTERFACE ---
+st.markdown("### ✨ Selecione seus produtos:")
 
 for categoria, itens in cardapio.items():
     with st.expander(categoria):
@@ -121,58 +125,53 @@ for categoria, itens in cardapio.items():
 
 st.markdown("---")
 
-# --- CARRINHO DINÂMICO ---
-st.header("🛒 Resumo do Pedido")
+# --- RESUMO FINAL ---
+st.header("🛒 Seu Carrinho")
 
 if not st.session_state.carrinho:
-    st.info("Seu carrinho está vazio. Adicione delícias acima!")
+    st.info("O carrinho está vazio. Comece a adicionar!")
 else:
     total = 0.0
-    resumo_zap = ""
+    resumo_msg = ""
     
     for item, info in st.session_state.carrinho.items():
         sub = info['preco'] * info['qtd']
         total += sub
-        st.write(f"🔹 {info['qtd']}x {item} — **R$ {sub:.2f}**")
-        resumo_zap += f"- {info['qtd']}x {item} (R$ {sub:.2f})\n"
+        st.write(f"✅ {info['qtd']}x {item} — **R$ {sub:.2f}**")
+        resumo_msg += f"- {info['qtd']}x {item} (R$ {sub:.2f})\n"
     
     st.markdown(f"## **Total: R$ {total:.2f}**")
     
-    if st.button("Limpar Escolhas"):
+    if st.button("Limpar Carrinho"):
         st.session_state.carrinho = {}
         st.rerun()
 
     st.markdown("---")
-    
-    # Finalização
-    st.subheader("🏁 Finalizar Pedido")
-    nome = st.text_input("Seu Nome:")
-    endereco = st.text_input("Endereço (ou deixe vazio para retirar):")
+    st.subheader("🏁 Finalização")
+    nome_user = st.text_input("Seu Nome:")
+    end_user = st.text_input("Endereço (Opcional - Vazio para Retirada):")
     
     st.markdown("""
-        <div style="background-color: #F1FAEE; padding: 10px; border-radius: 10px; border-left: 5px solid #565F3A;">
-            <small style="color: #565F3A;">🛵 <b>Aviso:</b> Entregas via Uber Moto. Consulte o valor do frete no WhatsApp.</small>
+        <div style="background-color: #FDFDFB; padding: 12px; border-radius: 10px; border: 1px dashed #565F3A; margin-top: 10px;">
+            <p style="color: #565F3A; margin: 0; font-size: 14px;">🛵 <b>Aviso de Entrega:</b> Usamos Uber Moto. O valor do frete é combinado diretamente no WhatsApp.</p>
         </div>
     """, unsafe_allow_html=True)
-    
-    st.write("") # Espaçador
 
-    if st.button("✅ ENVIAR PARA O WHATSAPP"):
-        if nome:
-            whats_elisa = "5511999999999" # TROQUE PELO NÚMERO REAL
-            local = endereco if endereco else "Retirada no Local"
-            msg = (f"Olá Elisa! Pedido via Web:\n\n*Cliente:* {nome}\n*Local:* {local}\n\n*Itens:*\n{resumo_zap}\n*Total: R$ {total:.2f}*")
-            link = f"https://wa.me/{whats_elisa}?text={msg.replace(' ', '%20').replace('\n', '%0A')}"
+    if st.button("GERAR PEDIDO"):
+        if nome_user:
+            whats_num = "5511999999999" # <-- MUDE PARA O NÚMERO DA ELISA
+            local_entrega = end_user if end_user else "Retirada no Local"
+            texto = (f"Olá Elisa! Novo pedido:\n\n*Cliente:* {nome_user}\n*Entrega:* {local_entrega}\n\n*Itens:*\n{resumo_msg}\n*Total: R$ {total:.2f}*")
+            link_final = f"https://wa.me/{whats_num}?text={texto.replace(' ', '%20').replace('\n', '%0A')}"
             
-            # Botão de WhatsApp Estilizado
             st.markdown(f'''
-                <a href="{link}" target="_blank" style="text-decoration: none;">
-                    <div style="background-color: #25D366; color: white; padding: 18px; text-align: center; border-radius: 12px; font-weight: bold; font-size: 20px; box-shadow: 0px 4px 10px rgba(0,0,0,0.2);">
-                        📱 FINALIZAR NO WHATSAPP
+                <a href="{link_final}" target="_blank" style="text-decoration: none;">
+                    <div style="background-color: #25D366; color: white; padding: 18px; text-align: center; border-radius: 12px; font-weight: bold; font-size: 18px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
+                        🚀 ENVIAR AGORA PARA O WHATSAPP
                     </div>
                 </a>
             ''', unsafe_allow_html=True)
         else:
-            st.error("Por favor, preencha seu nome para continuar.")
+            st.error("⚠️ Por favor, digite seu nome.")
 
-st.markdown("<br><br><center><small>Desenvolvido por Zynix</small></center>", unsafe_allow_html=True)
+st.markdown("<br><hr><center><small>Desenvolvido por Zynix</small></center>", unsafe_allow_html=True)
