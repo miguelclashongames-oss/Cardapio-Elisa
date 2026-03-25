@@ -4,47 +4,38 @@ import os
 # Configurações da Página
 st.set_page_config(page_title="Elisa - Doces Finos Artesanais", page_icon="🍫", layout="centered")
 
-# --- CSS PERSONALIZADO (ZYNIX PREMIUM) ---
+# --- CSS PARA DEIXAR TUDO GRANDE E LIMPO ---
 st.markdown("""
     <style>
     .stApp { background-color: #F8F9F5; color: #533E2B; }
     
-    /* Títulos das Categorias Bem Maiores */
+    /* Títulos das Categorias Gigantes */
     .stExpander span {
-        font-size: 24px !important;
+        font-size: 26px !important;
         font-weight: bold !important;
         color: #565F3A !important;
     }
     
-    /* Botão de Ver Carrinho Chamativo */
-    .btn-carrinho-central {
-        background-color: #D0A08A;
-        color: #533E2B;
-        padding: 20px;
-        text-align: center;
-        border-radius: 15px;
-        font-weight: bold;
-        font-size: 20px;
-        margin-top: 30px;
-        border: 2px solid #565F3A;
-    }
-
-    .stSidebar { background-color: #565F3A; }
-    .stSidebar h2, .stSidebar p, .stSidebar h4, .stSidebar span, .stSidebar div { color: #F1FAEE !important; }
-    
-    .stSidebar .stButton button {
-        background-color: #D0A08A;
-        color: #533E2B;
-        border: none;
-        border-radius: 20px;
-        font-weight: bold;
+    /* Botão de Adicionar mais visível */
+    .stButton button { 
+        background-color: #565F3A; 
+        color: white; 
+        border-radius: 10px;
         width: 100%;
+        font-weight: bold;
     }
-    
-    .stButton button { background-color: #565F3A; color: white; border-radius: 20px; }
 
     /* Logo Máxima */
-    [data-testid="stImage"] img { width: 100% !important; transform: scale(1.05); }
+    [data-testid="stImage"] img { width: 100% !important; }
+    
+    /* Estilo do Carrinho no final da página */
+    .caixa-pedido {
+        background-color: #565F3A;
+        padding: 20px;
+        border-radius: 15px;
+        color: white !important;
+        margin-top: 30px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -96,31 +87,60 @@ cardapio = {
 if 'carrinho' not in st.session_state:
     st.session_state.carrinho = {}
 
-# --- EXIBIÇÃO ---
+# --- EXIBIÇÃO DOS ITENS ---
 for categoria, itens in cardapio.items():
     with st.expander(categoria, expanded=False):
         for item, preco in itens.items():
             c1, c2 = st.columns([3, 1])
             c1.markdown(f"**{item}** \n R$ {preco:.2f}")
-            if c2.button("Add", key=f"btn_{categoria}_{item}"):
+            if c2.button("ADICIONAR", key=f"btn_{categoria}_{item}"):
                 if item in st.session_state.carrinho:
                     st.session_state.carrinho[item]['qtd'] += 1
                 else:
                     st.session_state.carrinho[item] = {'preco': preco, 'qtd': 1}
+                st.rerun() # ISSO FAZ O CARRINHO ATUALIZAR NA HORA!
 
-# BOTÃO CHAMATIVO NO FINAL DA LISTA
-if st.session_state.carrinho:
-    st.markdown(f'<div class="btn-carrinho-central">🛒 {len(st.session_state.carrinho)} Itens no Carrinho (Ver na Lateral)</div>', unsafe_allow_html=True)
+st.markdown("---")
 
-# --- SIDEBAR (CARRINHO) ---
-st.sidebar.header("🛒 Seu Pedido")
-total = 0.0
-resumo = ""
+# --- CARRINHO NO FINAL DA PÁGINA (MAIS FÁCIL PARA O CLIENTE) ---
+st.header("🛒 Seu Pedido")
 
 if not st.session_state.carrinho:
-    st.sidebar.info("Seu carrinho está vazio.")
+    st.info("Escolha os itens acima para montar seu pedido!")
 else:
-    for item, d in st.session_state.carrinho.items():
-        sub = d['preco'] * d['qtd']
-        total += sub
-        st.sidebar.markdown(f"**{item}**")
+    total = 0.0
+    resumo_texto = ""
+    
+    for item, dados in st.session_state.carrinho.items():
+        subtotal = dados['preco'] * dados['qtd']
+        total += subtotal
+        st.write(f"✅ {dados['qtd']}x **{item}** - R$ {subtotal:.2f}")
+        resumo_texto += f"- {dados['qtd']}x {item} (R$ {subtotal:.2f})\n"
+    
+    st.markdown(f"### **Total: R$ {total:.2f}**")
+    
+    if st.button("🗑️ Limpar Tudo"):
+        st.session_state.carrinho = {}
+        st.rerun()
+
+    st.markdown("---")
+    st.subheader("📝 Finalizar Pedido")
+    nome_cliente = st.text_input("Seu Nome (Obrigatório):")
+    endereco_cliente = st.text_input("Endereço (Deixe vazio para Retirada):")
+    st.info("🛵 Entrega via Uber Moto - Consulte o valor comigo!")
+
+    if st.button("🚀 ENVIAR PEDIDO PARA O WHATSAPP"):
+        if nome_cliente:
+            whats_elisa = "5511999999999" # <-- COLOQUE O NÚMERO REAL AQUI!
+            local = endereco_cliente if endereco_cliente else "Retirada no Local"
+            msg = (f"Olá Elisa! Pedido de Zynix App:\n\n*Cliente:* {nome_cliente}\n*Local:* {local}\n\n*Itens:*\n{resumo_texto}\n"
+                   f"*Total: R$ {total:.2f}*")
+            
+            # Link do WhatsApp
+            link_zap = f"https://wa.me/{whats_elisa}?text={msg.replace(' ', '%20').replace('\n', '%0A')}"
+            st.markdown(f'<a href="{link_zap}" target="_blank" style="text-decoration: none;"><div style="background-color: #25D366; color: white; padding: 15px; text-align: center; border-radius: 10px; font-weight: bold; font-size: 18px;">✅ TUDO CERTO! CLIQUE AQUI PARA MANDAR NO ZAP</div></a>', unsafe_allow_html=True)
+        else:
+            st.error("⚠️ Digite seu nome antes de enviar!")
+
+st.markdown("<br><br>", unsafe_allow_html=True)
+st.caption("Desenvolvido por Zynix Studios")
