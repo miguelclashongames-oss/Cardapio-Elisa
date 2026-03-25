@@ -86,7 +86,7 @@ cardapio = {
         "🍗 Frango (Pizza)": 15.0, "🥛 Calabresa c/ Requeijão": 15.0, "🍶 Frango c/ Requeijão": 15.0,
     },
     "🐣 OVOS AO LEITE": {
-        "🍫 Ovo ao Leite 250g": 25.0, "🍫 Ovo ao Leite 390g": 35.0, 
+        "🍫 Ovo ao Leite 250g": 25.0, "🍫 Ovo ao Leite 350g": 35.0, 
         "🍫 Ovo ao Leite 500g": 40.0, "🍫 Ovo ao Leite 1kg": 90.0,
     },
     "✨ OVOS TRUFADOS": {
@@ -95,7 +95,7 @@ cardapio = {
     },
     "🎮 OVOS INFANTIS": {
         "⚽ Ovo Bola": 35.0, "👟 Chuteira": 35.0, "🕹️ Controle de Video Game": 35.0,
-        "❤️ Coração 500g": 35.0,
+        "❤️ Coração 500g": 60.0,
     },
     "🧁 TABLETES & KITS": {
         "🍫 Tablete G Prestigio/Confete": 25.0, "🍓 Tablete G Brigadeiro/Beijinho": 35.0,
