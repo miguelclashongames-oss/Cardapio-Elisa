@@ -110,8 +110,8 @@ if 'carrinho' not in st.session_state:
     st.session_state.carrinho = {}
 
 # --- INTERFACE DE SELEÇÃO ---
-st.markdown("### ✨ Escolha suas delícias:")
 
+st.markdown("### 📋 Selecione os itens do seu pedido:")
 for categoria, itens in cardapio.items():
     with st.expander(categoria):
         for item, preco in itens.items():
