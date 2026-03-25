@@ -4,148 +4,123 @@ import os
 # Configurações da Página
 st.set_page_config(page_title="Elisa - Doces Finos Artesanais", page_icon="🍫", layout="centered")
 
-# --- CSS PERSONALIZADO (ESTILO PREMIUM ZYNIX) ---
+# --- CSS PERSONALIZADO (ZYNIX PREMIUM) ---
 st.markdown("""
     <style>
-    .stApp {
-        background-color: #F8F9F5;
-        color: #533E2B;
-    }
-    h1, h2, h3, h4, p, .stExpander p {
+    .stApp { background-color: #F8F9F5; color: #533E2B; }
+    
+    /* Títulos das Categorias Bem Maiores */
+    .stExpander span {
+        font-size: 24px !important;
+        font-weight: bold !important;
         color: #565F3A !important;
-        font-family: 'Georgia', serif;
     }
-    .stSidebar {
-        background-color: #565F3A;
+    
+    /* Botão de Ver Carrinho Chamativo */
+    .btn-carrinho-central {
+        background-color: #D0A08A;
+        color: #533E2B;
+        padding: 20px;
+        text-align: center;
+        border-radius: 15px;
+        font-weight: bold;
+        font-size: 20px;
+        margin-top: 30px;
+        border: 2px solid #565F3A;
     }
-    .stSidebar h2, .stSidebar p, .stSidebar h4, .stSidebar span, .stSidebar div {
-        color: #F1FAEE !important;
-    }
+
+    .stSidebar { background-color: #565F3A; }
+    .stSidebar h2, .stSidebar p, .stSidebar h4, .stSidebar span, .stSidebar div { color: #F1FAEE !important; }
+    
     .stSidebar .stButton button {
         background-color: #D0A08A;
         color: #533E2B;
         border: none;
         border-radius: 20px;
         font-weight: bold;
+        width: 100%;
     }
-    .stButton button {
-        background-color: #565F3A;
-        color: white;
-        border-radius: 20px;
-    }
-    /* Estilo para o detalhe embaixo do item no carrinho */
-    .item-detalhe {
-        font-size: 12px;
-        color: #D0A08A;
-        margin-top: -10px;
-        margin-bottom: 10px;
-    }
-    /* Logo ocupando o máximo de espaço */
-    [data-testid="stImage"] img {
-        width: 100% !important;
-        transform: scale(1.1); /* Aumenta um pouco além do container */
-    }
+    
+    .stButton button { background-color: #565F3A; color: white; border-radius: 20px; }
+
+    /* Logo Máxima */
+    [data-testid="stImage"] img { width: 100% !important; transform: scale(1.05); }
     </style>
 """, unsafe_allow_html=True)
 
-# --- EXIBIR A LOGO (MÁXIMO DESTAQUE) ---
+# --- LOGO ---
 caminho_logo = os.path.join(os.path.dirname(__file__), "logo.png")
 if os.path.exists(caminho_logo):
     st.image(caminho_logo, use_container_width=True)
-    st.markdown("<br>", unsafe_allow_html=True)
 else:
-    st.warning("⚠️ Arquivo logo.png não encontrado no GitHub.")
+    st.warning("⚠️ Adicione o arquivo logo.png no GitHub.")
 
-# --- BANCO DE DADOS ATUALIZADO ---
+# --- BANCO DE DADOS ---
 cardapio = {
-    "🌮 Tapiocas Salgadas": {
-        "🧈 Manteiga": 10.00, "🥪 Presunto com Mussarela": 15.00, "🧀 Mussarela": 15.00,
-        "🌭 Calabresa": 15.00, "🍅 Bauru": 20.00, "🥛 Calabresa com Requeijão": 20.00,
-        "🍕 Calabresa com Mussarela": 20.00, "🍗 Frango": 15.00, "🧀 Frango com Mussarela": 20.00,
-        "🍶 Frango com Requeijão": 20.00, "🥩 Carne Seca": 20.00, "🔥 Carne Seca com Requeijão": 25.00,
-        "🥘 Carne Seca com Mussarela": 25.00, "🌵 Queijo Coalho": 25.00,
+    "🌮 TAPIOCAS SALGADAS": {
+        "🧈 Manteiga": 10.0, "🥪 Presunto com Mussarela": 15.0, "🧀 Mussarela": 15.0,
+        "🌭 Calabresa": 15.0, "🍅 Bauru": 20.0, "🥛 Calabresa com Requeijão": 20.0,
+        "🍕 Calabresa com Mussarela": 20.0, "🍗 Frango": 15.0, "🧀 Frango com Mussarela": 20.0,
+        "🍶 Frango com Requeijão": 20.0, "🥩 Carne Seca": 20.0, "🔥 Carne Seca com Requeijão": 25.0,
+        "🥘 Carne Seca com Mussarela": 25.0, "🌵 Queijo Coalho": 25.0,
     },
-    "🍯 Tapiocas Doces": {
-        "🥥 Coco com Leite Condensado": 20.00, "🍓 Mussarela com Goiabada": 20.00,
-        "🍮 Doce de Leite": 20.00, "🍌 Banana com Leite Condensado": 20.00,
+    "🍯 TAPIOCAS DOCES": {
+        "🥥 Coco com Leite Condensado": 20.0, "🍓 Mussarela com Goiabada": 20.0,
+        "🍮 Doce de Leite": 20.0, "🍌 Banana com Leite Condensado": 20.0,
     },
-    "🍕 Mini Pizzas": {
-        "🧀 Mussarela (Pizza)": 10.00, "🍕 Calabresa (Pizza)": 10.00, "🌿 Margarita": 12.00,
-        "🍗 Frango (Pizza)": 15.00, "🥛 Calabresa c/ Requeijão": 12.00, "🍶 Frango c/ Requeijão": 17.00,
+    "🍕 MINI PIZZAS": {
+        "🧀 Mussarela (Pizza)": 10.0, "🍕 Calabresa (Pizza)": 10.0, "🌿 Margarita": 12.0,
+        "🍗 Frango (Pizza)": 15.0, "🥛 Calabresa c/ Requeijão": 12.0, "🍶 Frango c/ Requeijão": 17.0,
     },
-    "🐣 Ovos ao Leite": {
-        "🍫 Ovo ao Leite 250g": 25.00, "🍫 Ovo ao Leite 390g": 35.00, 
-        "🍫 Ovo ao Leite 500g": 40.00, "🍫 Ovo ao Leite 1kg": 90.00,
+    "🐣 OVOS AO LEITE": {
+        "🍫 Ovo ao Leite 250g": 25.0, "🍫 Ovo ao Leite 390g": 35.0, 
+        "🍫 Ovo ao Leite 500g": 40.0, "🍫 Ovo ao Leite 1kg": 90.0,
     },
-    "✨ Ovos Trufados": {
-        "🍯 Ovo Trufado PP": 45.00, "🍯 Ovo Trufado P": 55.00, 
-        "🍯 Ovo Trufado M": 90.00, "🍯 Ovo Trufado G": 140.00,
+    "✨ OVOS TRUFADOS": {
+        "🍯 Ovo Trufado PP": 45.0, "🍯 Ovo Trufado P": 55.0, 
+        "🍯 Ovo Trufado M": 90.0, "🍯 Ovo Trufado G": 140.0,
     },
-    "🎮 Ovos Infantis & Especiais": {
-        "⚽ Ovo Bola": 35.00, "👟 Chuteira": 35.00, "🕹️ Controle de Video Game": 35.00,
-        "❤️ Coração 500g": 35.00,
+    "🎮 OVOS INFANTIS": {
+        "⚽ Ovo Bola": 35.0, "👟 Chuteira": 35.0, "🕹️ Controle de Video Game": 35.0,
+        "❤️ Coração 500g": 35.0,
     },
-    "🧁 Ovos de Tablete & Kits": {
-        "🍫 Tablete Grande Prestigio/Confete": 25.00, 
-        "🍓 Tablete Grande Brigadeiro/Beijinho": 35.00,
-        "🎁 Kit com 3 Mini Ovos": 30.00, "🎁 Kit com 4 Mini Ovos": 40.00, "🎁 Kit com 5 Mini Ovos": 50.00,
+    "🧁 TABLETES & KITS": {
+        "🍫 Tablete G Prestigio/Confete": 25.0, "🍓 Tablete G Brigadeiro/Beijinho": 35.0,
+        "🎁 Kit 3 Mini Ovos": 30.0, "🎁 Kit 4 Mini Ovos": 40.0, "🎁 Kit 5 Mini Ovos": 50.0,
     },
-    "🍪 Diversos": {
-        "🍯 Pão de Mel": 10.00, "🍦 Cone Recheado": 10.00, "🍬 1kg de Bombom": 150.00,
+    "🍪 DIVERSOS": {
+        "🍯 Pão de Mel": 10.0, "🍦 Cone Recheado": 10.0, "🍬 1kg de Bombom": 150.0,
     }
 }
 
-# --- LÓGICA DO CARRINHO ---
 if 'carrinho' not in st.session_state:
     st.session_state.carrinho = {}
 
+# --- EXIBIÇÃO ---
 for categoria, itens in cardapio.items():
-    with st.expander(f"📍 {categoria}", expanded=False):
+    with st.expander(categoria, expanded=False):
         for item, preco in itens.items():
             c1, c2 = st.columns([3, 1])
-            c1.markdown(f"<p style='font-size: 16px; margin: 0;'><b>{item}</b> - R$ {preco:.2f}</p>", unsafe_allow_html=True)
-            chave_botao = f"btn_{categoria}_{item}".replace(" ", "_")
-            if c2.button("Add", key=chave_botao):
+            c1.markdown(f"**{item}** \n R$ {preco:.2f}")
+            if c2.button("Add", key=f"btn_{categoria}_{item}"):
                 if item in st.session_state.carrinho:
                     st.session_state.carrinho[item]['qtd'] += 1
                 else:
                     st.session_state.carrinho[item] = {'preco': preco, 'qtd': 1}
 
-# --- BARRA LATERAL ---
+# BOTÃO CHAMATIVO NO FINAL DA LISTA
+if st.session_state.carrinho:
+    st.markdown(f'<div class="btn-carrinho-central">🛒 {len(st.session_state.carrinho)} Itens no Carrinho (Ver na Lateral)</div>', unsafe_allow_html=True)
+
+# --- SIDEBAR (CARRINHO) ---
 st.sidebar.header("🛒 Seu Pedido")
 total = 0.0
 resumo = ""
 
 if not st.session_state.carrinho:
-    st.sidebar.info("Carrinho vazio.")
+    st.sidebar.info("Seu carrinho está vazio.")
 else:
     for item, d in st.session_state.carrinho.items():
         sub = d['preco'] * d['qtd']
         total += sub
         st.sidebar.markdown(f"**{item}**")
-        st.sidebar.markdown(f"<p class='item-detalhe'>{d['qtd']}x (R$ {d['preco']:.2f} cada) = R$ {sub:.2f}</p>", unsafe_allow_html=True)
-        resumo += f"- {d['qtd']}x {item} (R$ {sub:.2f})\n"
-    
-    st.sidebar.success(f"**Total Produtos: R$ {total:.2f}**")
-    st.sidebar.warning("🛵 **Entrega via Uber Moto**\n\nO custo é por conta do cliente. Consulte o valor comigo!")
-
-    if st.sidebar.button("Limpar Carrinho"):
-        st.session_state.carrinho = {}
-        st.rerun()
-
-    st.sidebar.markdown("---")
-    nome = st.sidebar.text_input("Seu Nome:")
-    end = st.sidebar.text_input("Endereço de Entrega:")
-    
-    if st.sidebar.button("🚀 Enviar Pedido"):
-        if nome and end and total > 0:
-            whats_elisa = "5511999999999" # TROQUE PELO WHATS REAL
-            msg = (f"Olá Elisa! Pedido de Zynix App:\n\n*Cliente:* {nome}\n*Endereço:* {end}\n\n*Itens:*\n{resumo}\n"
-                   f"*Total: R$ {total:.2f}*\n\n_(Ciente do frete Uber Moto à parte)_")
-            link = f"https://wa.me/{whats_elisa}?text={msg.replace(' ', '%20').replace('\n', '%0A')}"
-            st.sidebar.markdown(f"✅ [CONFIRMAR NO WHATSAPP]({link})")
-        else:
-            st.sidebar.error("Preencha nome/endereço!")
-
-st.markdown("---")
-st.caption("Desenvolvido por Zynix Studios")
