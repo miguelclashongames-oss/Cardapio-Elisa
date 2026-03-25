@@ -2,9 +2,9 @@ import streamlit as st
 import os
 
 # Configurações da Página
-st.set_page_config(page_title="Elisa - Doces Finos Artesanais", page_icon="🍫")
+st.set_page_config(page_title="Elisa - Doces Finos Artesanais", page_icon="🍫", layout="centered")
 
-# --- CSS PERSONALIZADO (CORES DA ZYNIX) ---
+# --- CSS PERSONALIZADO (ESTILO PREMIUM ELISA & ZYNIX) ---
 # Usei as cores do logo: Verde Musgo (#565F3A), Marrom (#533E2B) e Rosé (#D0A08A)
 st.markdown("""
     <style>
@@ -23,7 +23,7 @@ st.markdown("""
         background-color: #565F3A;
         color: #F1FAEE;
     }
-    .stSidebar h2, .stSidebar p {
+    .stSidebar h2, .stSidebar p, .stSidebar h4 {
         color: #F1FAEE !important;
     }
     /* Cor dos botões da barra lateral */
@@ -32,6 +32,7 @@ st.markdown("""
         color: #533E2B;
         border: none;
         border-radius: 20px;
+        font-weight: bold;
     }
     /* Cor dos botões na página central */
     .stButton button {
@@ -39,25 +40,52 @@ st.markdown("""
         color: white;
         border-radius: 20px;
     }
+    /* Estilo da notificação de 'adicionado' */
+    .stToast {
+        background-color: #D0A08A;
+        color: #533E2B;
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# --- CARREGAR E EXIBIR A LOGO NO TOPO ---
-def carregar_logo():
-    # Caminho do arquivo de logo no mesmo diretório
+# --- CARREGAR E EXIBIR A LOGO DESTAQUE NO TOPO ---
+def carregar_logo_destaque():
+    # Caminho do arquivo de logo no mesmo diretório no GitHub
     caminho_logo = os.path.join(os.path.dirname(__file__), "logo.png")
     
     # Verifica se o arquivo existe para não dar erro
     if os.path.exists(caminho_logo):
-        col1, col2, col3 = st.columns([1, 2, 1])
-        with col2:
-            st.image(caminho_logo, width=300) # Ajuste a largura se necessário
-            st.markdown("---")
+        # Usando HTML/CSS para centralizar e dar destaque (sem colunas)
+        st.markdown(
+            f"""
+            <div style="text-align: center;">
+                <img src="data:image/png;base64,{st.image(caminho_logo).data}" width="550" style="max-width: 100%; height: auto; margin-bottom: 20px;">
+            </div>
+            <hr style="border: 0; border-top: 1px solid #D0A08A; margin-bottom: 30px;">
+            """,
+            unsafe_allow_html=True
+        )
+        # Nota: O truque acima com data:image/png é chato de fazer no Streamlit puro, 
+        # mas o comando st.image resolve o centralizado se o container for centered.
+        
+        # JEITO FÁCIL E GARANTIDO NO STREAMLIT CLOUD:
+        # st.image(caminho_logo, width=550) # Removi as colunas, o centered layout cuida do resto
+        # st.markdown("---")
+        
     else:
-        st.warning("⚠️ Arquivo logo.png não encontrado. Verifique se ele está na mesma pasta do GitHub.")
+        st.warning("⚠️ Arquivo logo.png não encontrado no GitHub. Verifique se ele está na mesma pasta do app.py.")
 
 # Chama a função para exibir o logo
-carregar_logo()
+# carregar_logo_destaque() # Desativei o truque complexo
+
+# JEITO SIMPLES E GARANTIDO QUE JÁ FUNCIONA:
+caminho_logo = os.path.join(os.path.dirname(__file__), "logo.png")
+if os.path.exists(caminho_logo):
+    # Usando o container do Streamlit para centralizar
+    st.image(caminho_logo, width=550) # AUMENTADO PARA 550PX
+    st.markdown("---")
+else:
+    st.warning("⚠️ Arquivo logo.png não encontrado. Verifique se ele está na mesma pasta do GitHub.")
 
 
 # --- BANCO DE DADOS DO CARDÁPIO COM EMOJIS ---
