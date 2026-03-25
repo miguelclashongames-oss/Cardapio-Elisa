@@ -161,7 +161,7 @@ else:
         if nome_user:
             whats_num = "5511954906016" # <-- COLOQUE O WHATS DA ELISA AQUI!
             local = end_user if end_user else "Retirada no Local"
-            texto = (f"Olá Elisa! novo pedido: Web:\n\n*Cliente:* {nome_user}\n*Entrega:* {local}\n\n*Itens:*\n{resumo_msg}\n*Total: R$ {total:.2f}*")
+            texto = (f"Olá Elisa! novo pedido:\n\n*Cliente:* {nome_user}\n*Entrega:* {local}\n\n*Itens:*\n{resumo_msg}\n*Total: R$ {total:.2f}*")
             link = f"https://wa.me/{whats_num}?text={texto.replace(' ', '%20').replace('\n', '%0A')}"
             
             st.markdown(f'''
