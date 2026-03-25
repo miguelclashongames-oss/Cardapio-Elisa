@@ -1,32 +1,64 @@
 import streamlit as st
+import os
 
 # Configurações da Página
-st.set_page_config(page_title="Elisa Lanches & Chocolates", page_icon="🍫")
+st.set_page_config(page_title="Elisa - Doces Finos Artesanais", page_icon="🍫")
 
-# --- LOGO CHAMATIVA (ESTILO ZYNIX) ---
+# --- CSS PERSONALIZADO (CORES DA ZYNIX) ---
+# Usei as cores do logo: Verde Musgo (#565F3A), Marrom (#533E2B) e Rosé (#D0A08A)
 st.markdown("""
     <style>
-    .logo-text {
-        font-family: 'Arial Black', sans-serif;
-        color: #E63946;
-        font-size: 40px;
-        text-align: center;
-        text-shadow: 2px 2px #F1FAEE;
-        margin-bottom: 0px;
+    /* Cor do fundo e texto principal */
+    .stApp {
+        background-color: #F8F9F5;
+        color: #533E2B;
     }
-    .sub-logo {
-        color: #457B9D;
-        font-size: 18px;
-        text-align: center;
-        margin-top: -10px;
-        font-weight: bold;
+    /* Estilo dos títulos e expanders */
+    h1, h2, h3, h4, p, .stExpander p {
+        color: #565F3A !important;
+        font-family: 'Georgia', serif;
+    }
+    /* Estilo da Barra Lateral (Sidebar) */
+    .stSidebar {
+        background-color: #565F3A;
+        color: #F1FAEE;
+    }
+    .stSidebar h2, .stSidebar p {
+        color: #F1FAEE !important;
+    }
+    /* Cor dos botões da barra lateral */
+    .stSidebar .stButton button {
+        background-color: #D0A08A;
+        color: #533E2B;
+        border: none;
+        border-radius: 20px;
+    }
+    /* Cor dos botões na página central */
+    .stButton button {
+        background-color: #565F3A;
+        color: white;
+        border-radius: 20px;
     }
     </style>
-    <p class="logo-text">ELISA LANCHES</p>
-    <p class="sub-logo">& CHOCOLATES</p>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
-st.markdown("---")
+# --- CARREGAR E EXIBIR A LOGO NO TOPO ---
+def carregar_logo():
+    # Caminho do arquivo de logo no mesmo diretório
+    caminho_logo = os.path.join(os.path.dirname(__file__), "logo.png")
+    
+    # Verifica se o arquivo existe para não dar erro
+    if os.path.exists(caminho_logo):
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            st.image(caminho_logo, width=300) # Ajuste a largura se necessário
+            st.markdown("---")
+    else:
+        st.warning("⚠️ Arquivo logo.png não encontrado. Verifique se ele está na mesma pasta do GitHub.")
+
+# Chama a função para exibir o logo
+carregar_logo()
+
 
 # --- BANCO DE DADOS DO CARDÁPIO COM EMOJIS ---
 cardapio = {
@@ -77,10 +109,11 @@ if 'carrinho' not in st.session_state:
 
 # Exibir os itens
 for categoria, itens in cardapio.items():
-    with st.expander(categoria, expanded=True):
+    # Estilo refinado para os expanders
+    with st.expander(f"📍 {categoria}", expanded=True):
         for item, preco in itens.items():
             c1, c2 = st.columns([3, 1])
-            c1.write(f"**{item}** - R$ {preco:.2f}")
+            c1.markdown(f"<p style='font-size: 16px; margin: 0;'><b>{item}</b> - R$ {preco:.2f}</p>", unsafe_allow_html=True)
             
             # Chave única para evitar erro de elemento duplicado
             chave_botao = f"btn_{categoria}_{item}".replace(" ", "_")
@@ -98,7 +131,7 @@ total = 0.0
 resumo = ""
 
 if not st.session_state.carrinho:
-    st.sidebar.info("Carrinho vazio.")
+    st.sidebar.info("Adicione itens para começar.")
 else:
     for item, d in st.session_state.carrinho.items():
         sub = d['preco'] * d['qtd']
@@ -108,21 +141,22 @@ else:
     
     st.sidebar.success(f"**Total: R$ {total:.2f}**")
     
-    if st.sidebar.button("Limpar Tudo"):
+    if st.sidebar.button("Limpar Carrinho"):
         st.session_state.carrinho = {}
         st.rerun()
 
     st.sidebar.markdown("---")
+    st.sidebar.markdown("#### Seus Dados:")
     nome = st.sidebar.text_input("Seu Nome:")
     end = st.sidebar.text_input("Endereço ou Mesa:")
     
-    if st.sidebar.button("🚀 Enviar Pedido"):
+    if st.sidebar.button("🚀 Enviar Pedido via WhatsApp"):
         if nome and end and total > 0:
             # --- LEMBRE DE TROCAR O NÚMERO ABAIXO PARA O DA ELISA ---
-            whats_elisa = "5511954906016" 
+            whats_elisa = "5511999999999" 
             
             mensagem_zap = (
-                f"Olá Elisa! Pedido via cardapio digital:\n\n"
+                f"Olá Elisa! Pedido de Zynix App:\n\n"
                 f"*Cliente:* {nome}\n"
                 f"*Local:* {end}\n\n"
                 f"*Itens:*\n{resumo}\n"
@@ -130,9 +164,9 @@ else:
             )
             
             link_final = f"https://wa.me/{whats_elisa}?text={mensagem_zap.replace(' ', '%20').replace('\n', '%0A')}"
-            st.sidebar.markdown(f"✅ [CLIQUE AQUI PARA ENVIAR]({link_final})")
+            st.sidebar.markdown(f"✅ [CLIQUE AQUI PARA CONFIRMAR]({link_final})")
         else:
-            st.sidebar.warning("Preencha seus dados e adicione itens!")
+            st.sidebar.warning("Preencha nome/endereço e adicione itens!")
 
 # Rodapé
 st.markdown("---")
